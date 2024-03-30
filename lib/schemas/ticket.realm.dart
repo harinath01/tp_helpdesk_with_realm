@@ -8,16 +8,23 @@ part of 'ticket.dart';
 
 // ignore_for_file: type=lint
 class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   Ticket(
     int id,
     DateTime created,
     String description,
-    String title,
-    DateTime createdHumanize, {
+    String title, {
     Iterable<FollowUp> followUps = const [],
     TPUser? reportedBy,
-    Topic? topic,
+    Iterable<Topic> topics = const [],
+    String? createdHumanize = "",
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<Ticket>({
+        'created_humanize': "",
+      });
+    }
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'created', created);
     RealmObjectBase.set(this, 'description', description);
@@ -25,8 +32,9 @@ class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set<RealmList<FollowUp>>(
         this, 'followUps', RealmList<FollowUp>(followUps));
     RealmObjectBase.set(this, 'reportedBy', reportedBy);
-    RealmObjectBase.set(this, 'topic', topic);
-    RealmObjectBase.set(this, 'createdHumanize', createdHumanize);
+    RealmObjectBase.set<RealmList<Topic>>(
+        this, 'topics', RealmList<Topic>(topics));
+    RealmObjectBase.set(this, 'created_humanize', createdHumanize);
   }
 
   Ticket._();
@@ -69,17 +77,18 @@ class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'reportedBy', value);
 
   @override
-  Topic? get topic => RealmObjectBase.get<Topic>(this, 'topic') as Topic?;
+  RealmList<Topic> get topics =>
+      RealmObjectBase.get<Topic>(this, 'topics') as RealmList<Topic>;
   @override
-  set topic(covariant Topic? value) =>
-      RealmObjectBase.set(this, 'topic', value);
+  set topics(covariant RealmList<Topic> value) =>
+      throw RealmUnsupportedSetError();
 
   @override
-  DateTime get createdHumanize =>
-      RealmObjectBase.get<DateTime>(this, 'createdHumanize') as DateTime;
+  String? get createdHumanize =>
+      RealmObjectBase.get<String>(this, 'created_humanize') as String?;
   @override
-  set createdHumanize(DateTime value) =>
-      RealmObjectBase.set(this, 'createdHumanize', value);
+  set createdHumanize(String? value) =>
+      RealmObjectBase.set(this, 'created_humanize', value);
 
   @override
   Stream<RealmObjectChanges<Ticket>> get changes =>
@@ -96,8 +105,8 @@ class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
       'title': title.toEJson(),
       'followUps': followUps.toEJson(),
       'reportedBy': reportedBy.toEJson(),
-      'topic': topic.toEJson(),
-      'createdHumanize': createdHumanize.toEJson(),
+      'topics': topics.toEJson(),
+      'created_humanize': createdHumanize.toEJson(),
     };
   }
 
@@ -111,18 +120,18 @@ class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
         'title': EJsonValue title,
         'followUps': EJsonValue followUps,
         'reportedBy': EJsonValue reportedBy,
-        'topic': EJsonValue topic,
-        'createdHumanize': EJsonValue createdHumanize,
+        'topics': EJsonValue topics,
+        'created_humanize': EJsonValue createdHumanize,
       } =>
         Ticket(
           fromEJson(id),
           fromEJson(created),
           fromEJson(description),
           fromEJson(title),
-          fromEJson(createdHumanize),
           followUps: fromEJson(followUps),
           reportedBy: fromEJson(reportedBy),
-          topic: fromEJson(topic),
+          topics: fromEJson(topics),
+          createdHumanize: fromEJson(createdHumanize),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -140,9 +149,10 @@ class Ticket extends $Ticket with RealmEntity, RealmObjectBase, RealmObject {
           linkTarget: 'FollowUp', collectionType: RealmCollectionType.list),
       SchemaProperty('reportedBy', RealmPropertyType.object,
           optional: true, linkTarget: 'TPUser'),
-      SchemaProperty('topic', RealmPropertyType.object,
-          optional: true, linkTarget: 'Topic'),
-      SchemaProperty('createdHumanize', RealmPropertyType.timestamp),
+      SchemaProperty('topics', RealmPropertyType.object,
+          linkTarget: 'Topic', collectionType: RealmCollectionType.list),
+      SchemaProperty('createdHumanize', RealmPropertyType.string,
+          mapTo: 'created_humanize', optional: true),
     ]);
   }();
 

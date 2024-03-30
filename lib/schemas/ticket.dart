@@ -16,6 +16,7 @@ class $Ticket {
   late String title;
   late List<$FollowUp> followUps;
   late $TPUser? reportedBy;
-  late $Topic? topic;
-  late DateTime createdHumanize;
+  late List<$Topic> topics;
+  @MapTo("created_humanize")
+  late String? createdHumanize = "";
 }

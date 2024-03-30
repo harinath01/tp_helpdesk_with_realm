@@ -1,3 +1,4 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:realm/realm.dart';
 
 import 'user.dart';
