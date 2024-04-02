@@ -6,19 +6,22 @@ part of 'ticket.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-NetworkTicket _$NetworkTicketFromJson(Map<String, dynamic> json) =>
+NetworkTicket  _$NetworkTicketFromJson(Map<String, dynamic> json) =>
     NetworkTicket(
       id: json['id'] as int,
       created: json['created'] as String,
       description: json['description'] as String,
       title: json['title'] as String,
-      followUps: (json['followUps'] as List<dynamic>?)
+      followUps: (json['follow_ups'] as List<dynamic>?)
           ?.map((e) => NetworkFollowUp.fromJson(e as Map<String, dynamic>))
           .toList(),
       reportedBy: json['reported_by'] == null
           ? null
           : NetworkUser.fromJson(json['reported_by'] as Map<String, dynamic>),
       createdHumanize: json['created_humanize'] as String?,
+      topics: (json['topics'] as List<dynamic>)
+          .map((e) => NetworkTopic.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$NetworkTicketToJson(NetworkTicket instance) =>
@@ -27,8 +30,9 @@ Map<String, dynamic> _$NetworkTicketToJson(NetworkTicket instance) =>
       'created': instance.created,
       'description': instance.description,
       'title': instance.title,
-      'followUps': instance.followUps,
+      'follow_ups': instance.followUps,
       'reported_by': instance.reportedBy,
+      'topics': instance.topics,
       'created_humanize': instance.createdHumanize,
     };
 
@@ -37,7 +41,7 @@ NetworkFollowUp _$NetworkFollowUpFromJson(Map<String, dynamic> json) =>
       id: json['id'] as int,
       comment: json['comment'] as String,
       user: NetworkUser.fromJson(json['user'] as Map<String, dynamic>),
-      createdHumanize: json['createdHumanize'] as String,
+      createdHumanize: json['created_humanize'] as String,
       created: json['created'] as String,
     );
 
@@ -46,7 +50,7 @@ Map<String, dynamic> _$NetworkFollowUpToJson(NetworkFollowUp instance) =>
       'id': instance.id,
       'comment': instance.comment,
       'user': instance.user,
-      'createdHumanize': instance.createdHumanize,
+      'created_humanize': instance.createdHumanize,
       'created': instance.created,
     };
 

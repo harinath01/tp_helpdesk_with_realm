@@ -17,15 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final realm = Realm(Configuration.local([Ticket.schema, Topic.schema, FollowUp.schema, TPUser.schema]));
     print(realm.config.path);
-    TicketService().fetchTickets().then((tickets) async {
+    TicketService().fetchTickets().then((networkTicket) async {
       await realm.write((){
         realm.deleteAll<Ticket>();
-        for (var networkTicket in tickets) {
-          Ticket ticket = networkTicket.toTicket();
-          ticket.reportedBy = null;
-
-          realm.add(ticket);
-        }
+        Ticket ticket = networkTicket.toTicket();
+        realm.add(ticket, update: true);
       });
     });
 

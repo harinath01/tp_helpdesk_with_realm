@@ -13,10 +13,11 @@ class NetworkTicket {
   final String created;
   final String description;
   final String title;
+  @JsonKey(name: 'follow_ups')
   final List<NetworkFollowUp>? followUps;
   @JsonKey(name: 'reported_by')
   final NetworkUser? reportedBy;
-  final List<NetworkTopic> topics = [];
+  final List<NetworkTopic> topics;
   @JsonKey(name: 'created_humanize')
   final String? createdHumanize;
 
@@ -28,6 +29,7 @@ class NetworkTicket {
     required this.followUps,
     required this.reportedBy,
     required this.createdHumanize,
+    required this.topics
   });
 
 
@@ -56,6 +58,7 @@ class NetworkFollowUp {
   final int id;
   final String comment;
   final NetworkUser user;
+  @JsonKey(name: "created_humanize")
   final String createdHumanize;
   final String created;
 
